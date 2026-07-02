@@ -1,10 +1,109 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, Play, Pause, Star, X } from "lucide-react";
+import { Play, Pause, Star, X } from "lucide-react";
+
+// --- WELCOME OVERLAY ---
+function WelcomeOverlay({
+  onStart,
+}: {
+  onStart: () => void;
+}) {
+  const [visible, setVisible] = useState(true);
+
+  const handleStart = () => {
+    setVisible(false);
+    onStart();
+  };
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="welcome"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          onAnimationComplete={(def) => {
+            if ((def as { opacity: number }).opacity === 0) {
+              // fully gone — nothing to clean up, AnimatePresence handles unmount
+            }
+          }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+          style={{ background: "#0B0F19" }}
+        >
+          {/* Subtle twinkling stars in the overlay */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {Array.from({ length: 60 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full bg-white animate-twinkle"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  width: `${Math.random() * 2 + 1}px`,
+                  height: `${Math.random() * 2 + 1}px`,
+                  animationDelay: `${Math.random() * 4}s`,
+                  opacity: Math.random() * 0.6 + 0.1,
+                }}
+              />
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
+            className="relative z-10 text-center px-8 flex flex-col items-center gap-10"
+          >
+            {/* Decorative star row */}
+            <div className="flex items-center gap-3">
+              <Star className="w-3 h-3 text-primary/50 fill-primary/50" />
+              <Star className="w-5 h-5 text-primary/80 fill-primary/80" />
+              <Star className="w-3 h-3 text-primary/50 fill-primary/50" />
+            </div>
+
+            <h1 className="font-script text-4xl md:text-6xl text-primary drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]">
+              A Cosmic Gift For You
+            </h1>
+
+            <p className="text-secondary/70 text-sm md:text-base tracking-widest uppercase font-light">
+              Press play to begin your journey
+            </p>
+
+            <motion.button
+              id="start-journey-btn"
+              data-testid="button-start-journey"
+              onClick={handleStart}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.97 }}
+              className="mt-2 flex items-center gap-3 px-8 py-4 rounded-full border border-primary/40 bg-primary/10 text-primary text-sm tracking-widest uppercase font-medium hover:bg-primary/20 transition-colors shadow-[0_0_30px_rgba(251,191,36,0.15)]"
+            >
+              <Play size={18} fill="currentColor" />
+              Begin the Journey
+            </motion.button>
+
+            <div className="flex items-center gap-3">
+              <Star className="w-3 h-3 text-primary/50 fill-primary/50" />
+              <Star className="w-5 h-5 text-primary/80 fill-primary/80" />
+              <Star className="w-3 h-3 text-primary/50 fill-primary/50" />
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 // --- HERO COMPONENT ---
 function Hero() {
-  const [time, setTime] = useState({ years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [time, setTime] = useState({
+    years: 0,
+    months: 0,
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   useEffect(() => {
     const startDate = new Date("2026-06-30T00:00:00");
@@ -25,11 +124,18 @@ function Hero() {
         months += 12;
       }
 
-      // Remaining time within the current day
-      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const startBase = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const startOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+      );
+      const startBase = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate(),
+      );
       const baseMs = startDate.getTime() - startBase.getTime();
-      let remainMs = (now.getTime() - startOfToday.getTime()) - baseMs;
+      let remainMs = now.getTime() - startOfToday.getTime() - baseMs;
       if (remainMs < 0) remainMs += 86400000;
 
       const hours = Math.floor(remainMs / 3600000);
@@ -58,7 +164,7 @@ function Hero() {
               width: `${Math.random() * 3}px`,
               height: `${Math.random() * 3}px`,
               animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.8 + 0.2
+              opacity: Math.random() * 0.8 + 0.2,
             }}
           />
         ))}
@@ -74,7 +180,7 @@ function Hero() {
               left: `${Math.random() * 100}%`,
               height: `${Math.random() * 20 + 10}vh`,
               animationDuration: `${Math.random() * 1 + 0.5}s`,
-              animationDelay: `${Math.random() * 2}s`
+              animationDelay: `${Math.random() * 2}s`,
             }}
           />
         ))}
@@ -89,12 +195,12 @@ function Hero() {
         <h1 className="font-script text-5xl md:text-7xl text-primary mb-8 text-glow drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]">
           Our Story, Written in the Stars
         </h1>
-        
+
         <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12">
           {Object.entries(time).map(([unit, value]) => (
             <div key={unit} className="flex flex-col items-center">
               <div className="text-3xl md:text-5xl font-light tabular-nums text-white">
-                {String(value).padStart(2, '0')}
+                {String(value).padStart(2, "0")}
               </div>
               <div className="text-xs md:text-sm uppercase tracking-[0.2em] text-secondary mt-2 font-medium">
                 {unit}
@@ -106,8 +212,16 @@ function Hero() {
 
       {/* Mountains */}
       <div className="absolute bottom-0 w-full h-48 md:h-64 pointer-events-none text-card">
-        <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
-          <path fill="currentColor" fillOpacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,224,1152,197.3C1248,171,1344,160,1392,154.7L1440,149L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        <svg
+          viewBox="0 0 1440 320"
+          className="w-full h-full"
+          preserveAspectRatio="none"
+        >
+          <path
+            fill="currentColor"
+            fillOpacity="1"
+            d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,224,1152,197.3C1248,171,1344,160,1392,154.7L1440,149L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+          />
         </svg>
       </div>
     </div>
@@ -115,10 +229,15 @@ function Hero() {
 }
 
 // --- MUSIC CORNER COMPONENT ---
-function MusicCorner() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
+function MusicCorner({
+  audioRef,
+  isPlaying,
+  setIsPlaying,
+}: {
+  audioRef: React.RefObject<HTMLAudioElement | null>;
+  isPlaying: boolean;
+  setIsPlaying: (v: boolean) => void;
+}) {
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -133,60 +252,77 @@ function MusicCorner() {
   return (
     <div className="w-full py-24 px-4 bg-card border-t border-border/50 relative overflow-hidden">
       <div className="max-w-md mx-auto relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="bg-background/80 backdrop-blur-md border border-primary/20 rounded-2xl p-8 shadow-[0_0_30px_rgba(251,191,36,0.1)] relative"
         >
-          <div className="absolute -top-4 -right-4 text-primary opacity-50 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-          </div>
+          <h2 className="text-2xl font-script text-primary mb-6 text-center">
+            Cosmic Mixtape
+          </h2>
 
-          <h2 className="text-2xl font-script text-primary mb-6 text-center">Cosmic Mixtape</h2>
-          
           <div className="flex items-center justify-between mb-8">
-            <div className={`relative ${isPlaying ? 'animate-bob' : ''}`}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--secondary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            {/* Cat with headphones */}
+            <div className={`relative ${isPlaying ? "animate-bob" : ""}`}>
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="hsl(var(--secondary))"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1-19.995.324A10 10 0 0 1 12 2Z" />
                 <path d="M8 14v-2M16 14v-2M12 16v-2" />
                 <path d="M3 12a9 9 0 0 1 18 0" />
               </svg>
               {/* Headphones */}
-              <svg className="absolute -top-1 -left-1 text-primary" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                className="absolute -top-1 -left-1 text-primary"
+                width="72"
+                height="72"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
               </svg>
             </div>
-            
-            <button 
+
+            <button
+              data-testid="button-toggle-play"
               onClick={togglePlay}
               className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary hover:bg-primary/30 hover:scale-105 transition-all shadow-[0_0_15px_rgba(251,191,36,0.3)]"
             >
-              {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+              {isPlaying ? (
+                <Pause size={24} fill="currentColor" />
+              ) : (
+                <Play size={24} fill="currentColor" className="ml-1" />
+              )}
             </button>
           </div>
 
-          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden flex gap-1">
+          {/* Waveform bars */}
+          <div className="w-full h-6 bg-white/5 rounded-full overflow-hidden flex items-end gap-[2px] px-1 pb-1">
             {Array.from({ length: 30 }).map((_, i) => (
-              <div 
+              <div
                 key={i}
-                className="h-full bg-primary flex-1 transition-all duration-300"
+                className="bg-primary flex-1 rounded-sm transition-all duration-500"
                 style={{
-                  opacity: isPlaying ? Math.random() * 0.8 + 0.2 : 0.2,
-                  height: isPlaying ? `${Math.random() * 100}%` : '100%',
-                  marginTop: isPlaying ? 'auto' : 0
+                  height: isPlaying
+                    ? `${Math.floor(Math.random() * 80 + 20)}%`
+                    : "15%",
+                  opacity: isPlaying ? 0.7 + Math.random() * 0.3 : 0.25,
                 }}
               />
             ))}
           </div>
-          
-          <audio 
-            ref={audioRef} 
-            src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" 
-            loop 
-          />
         </motion.div>
       </div>
     </div>
@@ -199,30 +335,34 @@ const TIMELINE_NODES = [
     id: 1,
     title: "The Stars Aligned for Him",
     date: "May 23, 2005",
-    content: "The universe took its time crafting someone extraordinary. Every star had to be in exactly the right place.",
-    icon: <Star className="w-6 h-6" />
+    content:
+      "The universe took its time crafting someone extraordinary. Every star had to be in exactly the right place.",
+    icon: <Star className="w-6 h-6" />,
   },
   {
     id: 2,
     title: "The Stars Aligned for Her",
     date: "August 18, 2004",
-    content: "She arrived in the world quietly, carrying a universe of warmth inside her.",
-    icon: <Star className="w-6 h-6" />
+    content:
+      "She arrived in the world quietly, carrying a universe of warmth inside her.",
+    icon: <Star className="w-6 h-6" />,
   },
   {
     id: 3,
     title: "When Cosmic Paths Crossed",
     date: "June 23, 2026",
-    content: "Though heavy monsoon clouds covered the skies of Chhattisgarh, our worlds completely lit up.",
-    icon: <Star className="w-6 h-6" />
+    content:
+      "Though heavy monsoon clouds covered the skies of Chhattisgarh, our worlds completely lit up.",
+    icon: <Star className="w-6 h-6" />,
   },
   {
     id: 4,
     title: "Written in the Stars",
     date: "June 30, 2026",
-    content: "A Micro Full Moon rose that night — rare, close, impossibly bright. Just like this.",
-    icon: <Star className="w-6 h-6" />
-  }
+    content:
+      "A Micro Full Moon rose that night — rare, close, impossibly bright. Just like this.",
+    icon: <Star className="w-6 h-6" />,
+  },
 ];
 
 function Timeline() {
@@ -233,28 +373,35 @@ function Timeline() {
       <div className="max-w-2xl mx-auto relative">
         {/* Vertical line */}
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 -translate-x-1/2" />
-        
+
         <div className="space-y-32">
           {TIMELINE_NODES.map((node, i) => (
-            <motion.div 
+            <motion.div
               key={node.id}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              className={`relative flex items-center justify-center ${i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+              className={`relative flex items-center justify-center ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
             >
-              <div className={`w-1/2 ${i % 2 === 0 ? 'pr-12 text-right' : 'pl-12 text-left'}`}>
-                <h3 className="text-xl font-medium text-white mb-1">{node.title}</h3>
-                <p className="text-sm tracking-wider text-secondary/80 font-mono">{node.date}</p>
+              <div
+                className={`w-1/2 ${i % 2 === 0 ? "pr-12 text-right" : "pl-12 text-left"}`}
+              >
+                <h3 className="text-xl font-medium text-white mb-1">
+                  {node.title}
+                </h3>
+                <p className="text-sm tracking-wider text-secondary/80 font-mono">
+                  {node.date}
+                </p>
               </div>
-              
-              <button 
+
+              <button
+                data-testid={`button-timeline-node-${node.id}`}
                 onClick={() => setActiveNode(node.id)}
                 className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-card border border-primary flex items-center justify-center text-primary animate-pulse-glow z-10 hover:bg-primary/10 transition-colors"
               >
                 {node.icon}
               </button>
-              
+
               <div className="w-1/2" />
             </motion.div>
           ))}
@@ -264,39 +411,57 @@ function Timeline() {
       <AnimatePresence>
         {activeNode !== null && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveNode(null)}
               className="absolute inset-0 bg-background/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-md bg-card border border-primary/20 rounded-2xl p-8 shadow-2xl z-10 text-center"
             >
-              <button 
+              <button
                 onClick={() => setActiveNode(null)}
                 className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
               >
                 <X size={20} />
               </button>
-              
+
               <div className="mb-6 flex justify-center text-primary">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  <path d="M2 12h20" />
+                <svg
+                  width="80"
+                  height="80"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                >
+                  {/* Constellation graphic — dots connected by lines */}
+                  <circle cx="50" cy="20" r="3" fill="currentColor" />
+                  <circle cx="75" cy="40" r="2" fill="currentColor" />
+                  <circle cx="65" cy="68" r="3" fill="currentColor" />
+                  <circle cx="35" cy="68" r="2" fill="currentColor" />
+                  <circle cx="25" cy="40" r="3" fill="currentColor" />
+                  <line x1="50" y1="20" x2="75" y2="40" strokeOpacity="0.4" />
+                  <line x1="75" y1="40" x2="65" y2="68" strokeOpacity="0.4" />
+                  <line x1="65" y1="68" x2="35" y2="68" strokeOpacity="0.4" />
+                  <line x1="35" y1="68" x2="25" y2="40" strokeOpacity="0.4" />
+                  <line x1="25" y1="40" x2="50" y2="20" strokeOpacity="0.4" />
                 </svg>
               </div>
-              
-              <p className="text-lg leading-relaxed text-white/90 italic font-serif">
-                "{TIMELINE_NODES.find(n => n.id === activeNode)?.content}"
+
+              <h3 className="text-xl font-script text-primary mb-2">
+                {TIMELINE_NODES.find((n) => n.id === activeNode)?.title}
+              </h3>
+              <p className="text-sm text-primary/70 tracking-widest uppercase mb-6 font-mono">
+                {TIMELINE_NODES.find((n) => n.id === activeNode)?.date}
               </p>
-              <p className="mt-6 text-sm text-primary tracking-widest uppercase">
-                {TIMELINE_NODES.find(n => n.id === activeNode)?.date}
+              <p className="text-base leading-relaxed text-white/90 italic">
+                "{TIMELINE_NODES.find((n) => n.id === activeNode)?.content}"
               </p>
             </motion.div>
           </div>
@@ -344,9 +509,10 @@ function MountainPeak() {
       )}
 
       {/* The special star */}
-      <button 
+      <button
+        data-testid="button-easter-egg-star"
         onClick={handleClick}
-        className={`absolute top-1/4 right-1/3 p-4 group transition-opacity duration-500 ${showNote ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`absolute top-1/4 right-1/3 p-4 group transition-opacity duration-500 ${showNote ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
         <div className="relative">
           <Star className="w-8 h-8 text-primary fill-primary animate-pulse" />
@@ -359,14 +525,22 @@ function MountainPeak() {
 
       {/* Mountains Silhouette */}
       <div className="absolute bottom-0 w-full h-64 pointer-events-none text-card">
-        <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
-          <path fill="currentColor" fillOpacity="1" d="M0,128L60,149.3C120,171,240,213,360,208C480,203,600,149,720,144C840,139,960,181,1080,202.7C1200,224,1320,224,1380,224L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+        <svg
+          viewBox="0 0 1440 320"
+          className="w-full h-full"
+          preserveAspectRatio="none"
+        >
+          <path
+            fill="currentColor"
+            fillOpacity="1"
+            d="M0,128L60,149.3C120,171,240,213,360,208C480,203,600,149,720,144C840,139,960,181,1080,202.7C1200,224,1320,224,1380,224L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+          />
         </svg>
       </div>
 
       <AnimatePresence>
         {showNote && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
@@ -375,15 +549,21 @@ function MountainPeak() {
             <div className="bg-card/90 backdrop-blur-md border border-primary/30 rounded-2xl p-8 shadow-2xl text-center">
               <div className="flex justify-center items-center gap-2 mb-4">
                 <Star className="w-4 h-4 text-primary fill-primary" />
-                <h3 className="text-2xl font-script text-primary">You found it</h3>
+                <h3 className="text-2xl font-script text-primary">
+                  You found it
+                </h3>
                 <Star className="w-4 h-4 text-primary fill-primary" />
               </div>
-              
+
               <p className="text-white/90 leading-relaxed mb-8">
-                "If the cosmos had a purpose, I think it was this — putting you and me in the same room, on the same rainy afternoon, under those Chhattisgarh skies. I've been yours since the moment the clouds parted. Forever feels like not enough time with you. Happy Anniversary, my love."
+                "If the cosmos had a purpose, I think it was this — putting you
+                and me in the same room, on the same rainy afternoon, under
+                those Chhattisgarh skies. I've been yours since the moment the
+                clouds parted. Forever feels like not enough time with you.
+                Happy Anniversary, my love."
               </p>
 
-              <button 
+              <button
                 onClick={() => setShowNote(false)}
                 className="text-xs text-secondary/60 hover:text-secondary uppercase tracking-widest transition-colors"
               >
@@ -397,21 +577,37 @@ function MountainPeak() {
   );
 }
 
-function Home() {
-  return (
-    <main className="w-full bg-background dark text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
-      <Hero />
-      <MusicCorner />
-      <Timeline />
-      <MountainPeak />
-    </main>
-  );
-}
-
 export default function App() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleStart = () => {
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+      audioRef.current.play().catch(() => {
+        // autoplay policy may block — user gesture was provided so this should succeed
+      });
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <div className="dark">
-      <Home />
+      {/* Single shared audio element — mounted at app root so it persists across sections */}
+      <audio ref={audioRef} src="/lofi.mp3" loop preload="auto" />
+
+      <WelcomeOverlay onStart={handleStart} />
+
+      <main className="w-full bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+        <Hero />
+        <MusicCorner
+          audioRef={audioRef}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+        />
+        <Timeline />
+        <MountainPeak />
+      </main>
     </div>
   );
 }
