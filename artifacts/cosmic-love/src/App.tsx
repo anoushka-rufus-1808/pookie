@@ -367,10 +367,41 @@ const TIMELINE_NODES = [
 
 function Timeline() {
   const [activeNode, setActiveNode] = useState<number | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<number | null>(null);
 
   return (
-    <div className="w-full py-32 px-4 relative min-h-screen bg-gradient-to-b from-card to-background">
+    <div className="w-full py-32 px-4 relative min-h-screen bg-gradient-to-b from-card to-background overflow-hidden">
+      {/* Celestial star particles for background depth */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 80 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-twinkle"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 1.8 + 0.4}px`,
+              height: `${Math.random() * 1.8 + 0.4}px`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+              opacity: Math.random() * 0.5 + 0.05,
+            }}
+          />
+        ))}
+      </div>
+
       <div className="max-w-2xl mx-auto relative">
+        {/* Hint line */}
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+          className="text-center font-script text-lg text-secondary/60 mb-20 tracking-wide"
+        >
+          Tap the glowing stars to retrace our journey...
+        </motion.p>
+
         {/* Vertical line */}
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 -translate-x-1/2" />
 
@@ -394,13 +425,34 @@ function Timeline() {
                 </p>
               </div>
 
-              <button
-                data-testid={`button-timeline-node-${node.id}`}
-                onClick={() => setActiveNode(node.id)}
-                className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-card border border-primary flex items-center justify-center text-primary animate-pulse-glow z-10 hover:bg-primary/10 transition-colors"
-              >
-                {node.icon}
-              </button>
+              {/* Node button with tooltip */}
+              <div className="absolute left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+                <button
+                  data-testid={`button-timeline-node-${node.id}`}
+                  onClick={() => setActiveNode(node.id)}
+                  onMouseEnter={() => setHoveredNode(node.id)}
+                  onMouseLeave={() => setHoveredNode(null)}
+                  className="w-12 h-12 rounded-full bg-card border border-primary/70 flex items-center justify-center text-primary animate-node-glow cursor-pointer hover:bg-primary/15 transition-colors"
+                >
+                  {node.icon}
+                </button>
+
+                {/* Hover tooltip */}
+                <AnimatePresence>
+                  {hoveredNode === node.id && (
+                    <motion.span
+                      key="tooltip"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute top-full mt-2 whitespace-nowrap text-[11px] tracking-widest uppercase text-primary/70 bg-background/80 backdrop-blur-sm border border-primary/15 rounded-full px-3 py-1 pointer-events-none select-none"
+                    >
+                      Tap to open memory
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <div className="w-1/2" />
             </motion.div>
@@ -523,17 +575,28 @@ function MountainPeak() {
         </div>
       </button>
 
-      {/* Mountains Silhouette */}
-      <div className="absolute bottom-0 w-full h-64 pointer-events-none text-card">
+      {/* Mountain Silhouette — charcoal-blue peaks */}
+      <div className="absolute bottom-0 w-full pointer-events-none" style={{ height: "40%" }}>
         <svg
-          viewBox="0 0 1440 320"
+          viewBox="0 0 1440 400"
           className="w-full h-full"
           preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
+          {/* Back range — slightly lighter, further away */}
           <path
-            fill="currentColor"
-            fillOpacity="1"
-            d="M0,128L60,149.3C120,171,240,213,360,208C480,203,600,149,720,144C840,139,960,181,1080,202.7C1200,224,1320,224,1380,224L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+            d="M0,320 L120,240 L200,280 L320,180 L440,250 L560,160 L680,220 L760,140 L860,200 L1000,120 L1100,180 L1200,100 L1320,170 L1440,130 L1440,400 L0,400 Z"
+            fill="#162032"
+          />
+          {/* Front range — sharper, darker charcoal-blue */}
+          <path
+            d="M0,380 L80,310 L160,350 L280,260 L380,320 L480,230 L600,290 L700,210 L820,280 L920,200 L1040,270 L1160,190 L1280,250 L1360,210 L1440,240 L1440,400 L0,400 Z"
+            fill="#1E293B"
+          />
+          {/* Foreground foothills — darkest, closest */}
+          <path
+            d="M0,400 L0,370 L100,355 L200,375 L320,345 L440,368 L560,352 L680,372 L800,350 L920,365 L1040,355 L1160,370 L1300,358 L1440,365 L1440,400 Z"
+            fill="#152030"
           />
         </svg>
       </div>
