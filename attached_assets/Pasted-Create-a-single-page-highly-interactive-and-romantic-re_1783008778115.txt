@@ -1,0 +1,29 @@
+Create a single-page, highly interactive, and romantic responsive web application using HTML, CSS (Tailwind CSS via CDN), and vanilla JavaScript. This website is a digital gift for my boyfriend. The aesthetic should be a modern, cozy, lo-fi blend of cats, lo-fi music, rainy monsoon vibes, and a starry mountain trek. 
+
+The website should be a story-driven scrolling journey with the following distinct sections:
+
+1. HERO SECTION & RELATIONSHIP COUNTER:
+- A dark, cozy night-sky aesthetic with mountain silhouettes at the bottom.
+- A beautiful real-time counter that calculates and displays the exact time elapsed (Years, Months, Days, Hours, Minutes, Seconds) since our anniversary on June 30, 2026. 
+- A subtle CSS animation of gentle monsoon rain falling down the screen.
+
+2. COZY LO-FI MUSIC CORNER:
+- A beautifully styled, minimal embedded music player or a stylized audio player widget representing a "Cosmic Mixtape." 
+- Include a play/pause button that plays a cozy, copyright-free lo-fi background track.
+- Add a tiny, cute pixel-art style cat wearing headphones sitting near a camp lantern. The cat should gently bob its head or pulse when the music is playing.
+
+3. THE INTERACTIVE CELESTIAL TIMELINE (Scroll/Trek Journey):
+As the user scrolls down, the background transitions smoothly from a rainy valley to a clear, star-filled mountaintop. Along this trek, create a sleek timeline with 4 interactive "Constellation Nodes." Clicking each node opens a beautiful modal or card revealing:
+- Node 1 (May 23, 2005): "The Stars Aligned for Him" - His birthday. Show a stylized constellation graphic.
+- Node 2 (August 18, 2004): "The Stars Aligned for Her" - My birthday. Show a matching stylized constellation graphic.
+- Node 3 (June 23, 2026): "When Cosmic Paths Crossed" - The workshop where we met. Add a poetic note: "Though heavy monsoon clouds covered the skies of Chhattisgarh, our worlds completely lit up."
+- Node 4 (June 30, 2026): "Written in the Stars" - The day we started dating. Feature a graphic of a glowing Micro Full Moon emerging from parting monsoon clouds.
+
+4. EASTER EGG & CLOSING:
+- At the mountain peak (bottom of the page), place a hidden interactive element (e.g., clicking a specific glowing star or a cat constellation). 
+- Clicking it triggers a smooth "shooting star" animation across the screen and reveals a beautiful, heartfelt hidden love note.
+
+DESIGN & TECHNICAL SPECIFICATIONS:
+- Use a gorgeous dark mode color palette: deep indigo, midnight blue, warm lantern gold (#FBBF24), and soft lo-fi lavender.
+- Font choices should be clean, modern, and readable (like Poppins or Inter via Google Fonts).
+- Ensure smooth scrolling, fully responsive layouts for mobile and desktop, and clean, well-commented JavaScript code handling the real-time counter, the audio player state, and the timeline interactions. Keep everything in index.html, styles.css, and script.js, or bundled beautifully in a single file structure that runs out-of-the-box in Replit.

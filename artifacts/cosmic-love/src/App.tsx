@@ -1,0 +1,417 @@
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Music, Play, Pause, Star, X } from "lucide-react";
+
+// --- HERO COMPONENT ---
+function Hero() {
+  const [time, setTime] = useState({ years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const startDate = new Date("2026-06-30T00:00:00");
+
+    const calculate = () => {
+      const now = new Date();
+      let years = now.getFullYear() - startDate.getFullYear();
+      let months = now.getMonth() - startDate.getMonth();
+      let days = now.getDate() - startDate.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      // Remaining time within the current day
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startBase = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const baseMs = startDate.getTime() - startBase.getTime();
+      let remainMs = (now.getTime() - startOfToday.getTime()) - baseMs;
+      if (remainMs < 0) remainMs += 86400000;
+
+      const hours = Math.floor(remainMs / 3600000);
+      const minutes = Math.floor((remainMs % 3600000) / 60000);
+      const seconds = Math.floor((remainMs % 60000) / 1000);
+
+      setTime({ years, months, days, hours, minutes, seconds });
+    };
+
+    calculate();
+    const timer = setInterval(calculate, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background">
+      {/* Stars */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 100 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-twinkle"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 3}px`,
+              height: `${Math.random() * 3}px`,
+              animationDelay: `${Math.random() * 3}s`,
+              opacity: Math.random() * 0.8 + 0.2
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Rain */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-[1px] bg-gradient-to-b from-transparent via-white to-transparent rain-drop"
+            style={{
+              left: `${Math.random() * 100}%`,
+              height: `${Math.random() * 20 + 10}vh`,
+              animationDuration: `${Math.random() * 1 + 0.5}s`,
+              animationDelay: `${Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="z-10 text-center px-4"
+      >
+        <h1 className="font-script text-5xl md:text-7xl text-primary mb-8 text-glow drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]">
+          Our Story, Written in the Stars
+        </h1>
+        
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12">
+          {Object.entries(time).map(([unit, value]) => (
+            <div key={unit} className="flex flex-col items-center">
+              <div className="text-3xl md:text-5xl font-light tabular-nums text-white">
+                {String(value).padStart(2, '0')}
+              </div>
+              <div className="text-xs md:text-sm uppercase tracking-[0.2em] text-secondary mt-2 font-medium">
+                {unit}
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Mountains */}
+      <div className="absolute bottom-0 w-full h-48 md:h-64 pointer-events-none text-card">
+        <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
+          <path fill="currentColor" fillOpacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,224,1152,197.3C1248,171,1344,160,1392,154.7L1440,149L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// --- MUSIC CORNER COMPONENT ---
+function MusicCorner() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  return (
+    <div className="w-full py-24 px-4 bg-card border-t border-border/50 relative overflow-hidden">
+      <div className="max-w-md mx-auto relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-background/80 backdrop-blur-md border border-primary/20 rounded-2xl p-8 shadow-[0_0_30px_rgba(251,191,36,0.1)] relative"
+        >
+          <div className="absolute -top-4 -right-4 text-primary opacity-50 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+
+          <h2 className="text-2xl font-script text-primary mb-6 text-center">Cosmic Mixtape</h2>
+          
+          <div className="flex items-center justify-between mb-8">
+            <div className={`relative ${isPlaying ? 'animate-bob' : ''}`}>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--secondary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1-19.995.324A10 10 0 0 1 12 2Z" />
+                <path d="M8 14v-2M16 14v-2M12 16v-2" />
+                <path d="M3 12a9 9 0 0 1 18 0" />
+              </svg>
+              {/* Headphones */}
+              <svg className="absolute -top-1 -left-1 text-primary" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
+              </svg>
+            </div>
+            
+            <button 
+              onClick={togglePlay}
+              className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary hover:bg-primary/30 hover:scale-105 transition-all shadow-[0_0_15px_rgba(251,191,36,0.3)]"
+            >
+              {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+            </button>
+          </div>
+
+          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden flex gap-1">
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div 
+                key={i}
+                className="h-full bg-primary flex-1 transition-all duration-300"
+                style={{
+                  opacity: isPlaying ? Math.random() * 0.8 + 0.2 : 0.2,
+                  height: isPlaying ? `${Math.random() * 100}%` : '100%',
+                  marginTop: isPlaying ? 'auto' : 0
+                }}
+              />
+            ))}
+          </div>
+          
+          <audio 
+            ref={audioRef} 
+            src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" 
+            loop 
+          />
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// --- TIMELINE COMPONENT ---
+const TIMELINE_NODES = [
+  {
+    id: 1,
+    title: "The Stars Aligned for Him",
+    date: "May 23, 2005",
+    content: "The universe took its time crafting someone extraordinary. Every star had to be in exactly the right place.",
+    icon: <Star className="w-6 h-6" />
+  },
+  {
+    id: 2,
+    title: "The Stars Aligned for Her",
+    date: "August 18, 2004",
+    content: "She arrived in the world quietly, carrying a universe of warmth inside her.",
+    icon: <Star className="w-6 h-6" />
+  },
+  {
+    id: 3,
+    title: "When Cosmic Paths Crossed",
+    date: "June 23, 2026",
+    content: "Though heavy monsoon clouds covered the skies of Chhattisgarh, our worlds completely lit up.",
+    icon: <Star className="w-6 h-6" />
+  },
+  {
+    id: 4,
+    title: "Written in the Stars",
+    date: "June 30, 2026",
+    content: "A Micro Full Moon rose that night — rare, close, impossibly bright. Just like this.",
+    icon: <Star className="w-6 h-6" />
+  }
+];
+
+function Timeline() {
+  const [activeNode, setActiveNode] = useState<number | null>(null);
+
+  return (
+    <div className="w-full py-32 px-4 relative min-h-screen bg-gradient-to-b from-card to-background">
+      <div className="max-w-2xl mx-auto relative">
+        {/* Vertical line */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 -translate-x-1/2" />
+        
+        <div className="space-y-32">
+          {TIMELINE_NODES.map((node, i) => (
+            <motion.div 
+              key={node.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className={`relative flex items-center justify-center ${i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+            >
+              <div className={`w-1/2 ${i % 2 === 0 ? 'pr-12 text-right' : 'pl-12 text-left'}`}>
+                <h3 className="text-xl font-medium text-white mb-1">{node.title}</h3>
+                <p className="text-sm tracking-wider text-secondary/80 font-mono">{node.date}</p>
+              </div>
+              
+              <button 
+                onClick={() => setActiveNode(node.id)}
+                className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-card border border-primary flex items-center justify-center text-primary animate-pulse-glow z-10 hover:bg-primary/10 transition-colors"
+              >
+                {node.icon}
+              </button>
+              
+              <div className="w-1/2" />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {activeNode !== null && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveNode(null)}
+              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-card border border-primary/20 rounded-2xl p-8 shadow-2xl z-10 text-center"
+            >
+              <button 
+                onClick={() => setActiveNode(null)}
+                className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="mb-6 flex justify-center text-primary">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  <path d="M2 12h20" />
+                </svg>
+              </div>
+              
+              <p className="text-lg leading-relaxed text-white/90 italic font-serif">
+                "{TIMELINE_NODES.find(n => n.id === activeNode)?.content}"
+              </p>
+              <p className="mt-6 text-sm text-primary tracking-widest uppercase">
+                {TIMELINE_NODES.find(n => n.id === activeNode)?.date}
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// --- EASTER EGG COMPONENT ---
+function MountainPeak() {
+  const [showNote, setShowNote] = useState(false);
+  const [animating, setAnimating] = useState(false);
+
+  const handleClick = () => {
+    if (showNote || animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setAnimating(false);
+      setShowNote(true);
+    }, 2000);
+  };
+
+  return (
+    <div className="relative w-full h-[80vh] bg-background overflow-hidden flex items-end justify-center">
+      {/* Background Stars */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-twinkle"
+            style={{
+              top: `${Math.random() * 70}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 2}px`,
+              height: `${Math.random() * 2}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {animating && (
+        <div className="absolute top-10 left-10 w-2 h-2 bg-white rounded-full animate-shooting-star" />
+      )}
+
+      {/* The special star */}
+      <button 
+        onClick={handleClick}
+        className={`absolute top-1/4 right-1/3 p-4 group transition-opacity duration-500 ${showNote ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      >
+        <div className="relative">
+          <Star className="w-8 h-8 text-primary fill-primary animate-pulse" />
+          <div className="absolute inset-0 bg-primary rounded-full blur-xl opacity-50 animate-pulse" />
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-primary/70 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Find Me
+          </div>
+        </div>
+      </button>
+
+      {/* Mountains Silhouette */}
+      <div className="absolute bottom-0 w-full h-64 pointer-events-none text-card">
+        <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
+          <path fill="currentColor" fillOpacity="1" d="M0,128L60,149.3C120,171,240,213,360,208C480,203,600,149,720,144C840,139,960,181,1080,202.7C1200,224,1320,224,1380,224L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+        </svg>
+      </div>
+
+      <AnimatePresence>
+        {showNote && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-32 z-20 w-full max-w-lg px-4"
+          >
+            <div className="bg-card/90 backdrop-blur-md border border-primary/30 rounded-2xl p-8 shadow-2xl text-center">
+              <div className="flex justify-center items-center gap-2 mb-4">
+                <Star className="w-4 h-4 text-primary fill-primary" />
+                <h3 className="text-2xl font-script text-primary">You found it</h3>
+                <Star className="w-4 h-4 text-primary fill-primary" />
+              </div>
+              
+              <p className="text-white/90 leading-relaxed mb-8">
+                "If the cosmos had a purpose, I think it was this — putting you and me in the same room, on the same rainy afternoon, under those Chhattisgarh skies. I've been yours since the moment the clouds parted. Forever feels like not enough time with you. Happy Anniversary, my love."
+              </p>
+
+              <button 
+                onClick={() => setShowNote(false)}
+                className="text-xs text-secondary/60 hover:text-secondary uppercase tracking-widest transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <main className="w-full bg-background dark text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+      <Hero />
+      <MusicCorner />
+      <Timeline />
+      <MountainPeak />
+    </main>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="dark">
+      <Home />
+    </div>
+  );
+}
