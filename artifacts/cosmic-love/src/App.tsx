@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, Star, X } from "lucide-react";
 
 // --- TREKKING CAT DECORATION ---
-// The illustrated trekking cat (cat2.png, transparent background), used as a
-// recurring decorative motif across the page. Sized to be large and clearly
-// noticeable, with a slow idle bob plus a subtle tail-flick and blink layer
-// so the cat feels alive in each of its scattered instances.
+// A hand-drawn inline SVG trekking cat, used as a recurring decorative motif
+// across the page. Built entirely from vector shapes (no raster image), so
+// it always renders with a guaranteed-transparent background. Sized around
+// h-20 w-20 by default, with a slow idle bob plus subtle tail-flick and
+// blink layers so the cat feels alive in each of its scattered instances.
 function MiniCat({
   className = "",
   size = "md",
@@ -18,24 +19,88 @@ function MiniCat({
 }) {
   const sizeClasses =
     size === "sm"
-      ? "w-20 h-20 md:w-24 md:h-24"
+      ? "w-16 h-16 md:w-20 md:h-20"
       : size === "lg"
-        ? "w-28 h-28 md:w-36 md:h-36"
-        : "w-24 h-24 md:w-28 md:h-28";
+        ? "w-24 h-24 md:w-28 md:h-28"
+        : "w-20 h-20 md:w-24 md:h-24";
 
   return (
     <div
       className={`animate-cat-float pointer-events-none select-none ${sizeClasses} ${className}`}
       style={{ transform: flip ? "scaleX(-1)" : undefined }}
     >
-      <div className="relative w-full h-full animate-tail-flick">
-        <img
-          src="/cat2.png"
-          alt=""
-          className="w-full h-full object-contain animate-cat-blink drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)] mix-blend-lighten"
-          draggable={false}
+      <svg
+        viewBox="0 0 100 100"
+        className="w-full h-full animate-cat-blink overflow-visible drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)]"
+      >
+        {/* Tiny hiking backpack, strapped to the back */}
+        <g className="animate-tail-flick" style={{ transformOrigin: "78% 82%" }}>
+          <rect
+            x="62"
+            y="46"
+            width="18"
+            height="22"
+            rx="4"
+            fill="#4A3B2E"
+            stroke="#2E241B"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M66 46v-4a5 5 0 0 1 10 0v4"
+            fill="none"
+            stroke="#2E241B"
+            strokeWidth="1.5"
+          />
+          {/* Paw badge on the backpack */}
+          <circle cx="71" cy="57" r="2.6" fill="#F2A93B" />
+        </g>
+
+        {/* Tail (flicks independently) */}
+        <path
+          className="animate-tail-flick"
+          style={{ transformOrigin: "22% 78%" }}
+          d="M22 82c-9 2-15-4-13-13"
+          fill="none"
+          stroke="#C9793C"
+          strokeWidth="7"
+          strokeLinecap="round"
         />
-      </div>
+
+        {/* Body */}
+        <ellipse cx="48" cy="66" rx="26" ry="19" fill="#E8A662" />
+        {/* Belly patch */}
+        <ellipse cx="46" cy="74" rx="14" ry="9" fill="#FBE3C0" />
+
+        {/* Head */}
+        <circle cx="48" cy="36" r="21" fill="#E8A662" />
+        {/* Muzzle patch */}
+        <ellipse cx="48" cy="42" rx="10" ry="7" fill="#FBE3C0" />
+
+        {/* Ears */}
+        <path d="M30 26 L26 10 L42 22 Z" fill="#E8A662" />
+        <path d="M66 26 L70 10 L54 22 Z" fill="#E8A662" />
+        <path d="M31 22 L29 13 L38 20 Z" fill="#F6C9A0" />
+        <path d="M65 22 L67 13 L58 20 Z" fill="#F6C9A0" />
+
+        {/* Tabby stripes */}
+        <path d="M38 17c2 3 2 6 0 9" fill="none" stroke="#C9793C" strokeWidth="2" strokeLinecap="round" />
+        <path d="M58 17c-2 3-2 6 0 9" fill="none" stroke="#C9793C" strokeWidth="2" strokeLinecap="round" />
+        <path d="M48 16v8" fill="none" stroke="#C9793C" strokeWidth="2" strokeLinecap="round" />
+        <path d="M30 60c4 1 8 1 12 0" fill="none" stroke="#C9793C" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M62 60c-4 1-8 1-12 0" fill="none" stroke="#C9793C" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Face */}
+        <circle cx="40" cy="35" r="2.2" fill="#2E241B" />
+        <circle cx="56" cy="35" r="2.2" fill="#2E241B" />
+        <path d="M45 44c2 1.5 6 1.5 8 0" fill="none" stroke="#2E241B" strokeWidth="1.6" strokeLinecap="round" />
+        {/* Whiskers */}
+        <path d="M28 40h-9M28 44h-9" stroke="#2E241B" strokeWidth="1" strokeLinecap="round" />
+        <path d="M68 40h9M68 44h9" stroke="#2E241B" strokeWidth="1" strokeLinecap="round" />
+
+        {/* Paws */}
+        <ellipse cx="34" cy="82" rx="7" ry="5" fill="#E8A662" />
+        <ellipse cx="60" cy="82" rx="7" ry="5" fill="#E8A662" />
+      </svg>
     </div>
   );
 }
