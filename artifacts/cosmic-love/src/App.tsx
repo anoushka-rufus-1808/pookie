@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, Star, X } from "lucide-react";
 
 // --- TREKKING CAT DECORATION ---
-// The illustrated trekking cat (cat.webp), used as a recurring decorative
-// motif across the page. Base size sits around 70-90px, scaling down slightly
-// on mobile, with a slow idle float so it still feels alive.
+// The illustrated trekking cat (cat2.png, transparent background), used as a
+// recurring decorative motif across the page. Sized to be large and clearly
+// noticeable, with a slow idle bob plus a subtle tail-flick and blink layer
+// so the cat feels alive in each of its scattered instances.
 function MiniCat({
   className = "",
   size = "md",
@@ -17,22 +18,24 @@ function MiniCat({
 }) {
   const sizeClasses =
     size === "sm"
-      ? "w-14 h-14 md:w-16 md:h-16"
+      ? "w-20 h-20 md:w-24 md:h-24"
       : size === "lg"
-        ? "w-20 h-20 md:w-24 md:h-24"
-        : "w-16 h-16 md:w-20 md:h-20";
+        ? "w-28 h-28 md:w-36 md:h-36"
+        : "w-24 h-24 md:w-28 md:h-28";
 
   return (
     <div
       className={`animate-cat-float pointer-events-none select-none ${sizeClasses} ${className}`}
       style={{ transform: flip ? "scaleX(-1)" : undefined }}
     >
-      <img
-        src="/cat.webp"
-        alt=""
-        className="w-full h-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
-        draggable={false}
-      />
+      <div className="relative w-full h-full animate-tail-flick">
+        <img
+          src="/cat2.png"
+          alt=""
+          className="w-full h-full object-contain animate-cat-blink drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)]"
+          draggable={false}
+        />
+      </div>
     </div>
   );
 }
