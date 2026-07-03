@@ -700,11 +700,16 @@ function MountainPeak() {
         onClick={handleClick}
         className={`absolute top-1/4 right-1/3 p-4 group transition-opacity duration-500 ${showNote ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
-        <div className="relative">
-          <Star className="w-8 h-8 text-primary fill-primary animate-pulse" />
-          <div className="absolute inset-0 bg-primary rounded-full blur-xl opacity-50 animate-pulse" />
-          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-primary/70 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            Find Me
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono tracking-widest text-primary/80 uppercase animate-pulse">
+            Tap me &rarr;
+          </span>
+          <div className="relative">
+            <Star className="w-8 h-8 text-primary fill-primary animate-pulse" />
+            <div className="absolute inset-0 bg-primary rounded-full blur-xl opacity-50 animate-pulse" />
+            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-primary/70 tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Find Me
+            </div>
           </div>
         </div>
       </button>
