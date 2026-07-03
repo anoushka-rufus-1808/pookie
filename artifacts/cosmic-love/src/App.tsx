@@ -2,92 +2,37 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, Star, X } from "lucide-react";
 
-// --- MINI CAT DECORATION ---
-// A small, cute lo-fi cat silhouette used as a recurring decorative motif.
-// Internally scaled up ~1.7x so instances read clearly across the page while
-// keeping each call site's relative size variations intact.
-const MINI_CAT_SCALE = 1.7;
-
+// --- TREKKING CAT DECORATION ---
+// The illustrated trekking cat (cat.webp), used as a recurring decorative
+// motif across the page. Base size sits around 70-90px, scaling down slightly
+// on mobile, with a slow idle float so it still feels alive.
 function MiniCat({
   className = "",
-  size = 28,
-  color = "hsl(var(--secondary))",
+  size = "md",
   flip = false,
-  accessory,
 }: {
   className?: string;
-  size?: number;
-  color?: string;
+  size?: "sm" | "md" | "lg";
   flip?: boolean;
-  accessory?: "backpack" | "stick";
 }) {
-  const displaySize = size * MINI_CAT_SCALE;
-  // Extra padding so the tail-flick / bob / accessory don't get visually clipped
-  const boxSize = displaySize * 1.35;
+  const sizeClasses =
+    size === "sm"
+      ? "w-14 h-14 md:w-16 md:h-16"
+      : size === "lg"
+        ? "w-20 h-20 md:w-24 md:h-24"
+        : "w-16 h-16 md:w-20 md:h-20";
 
   return (
     <div
-      className={`animate-cat-float pointer-events-none select-none flex items-center justify-center overflow-visible ${className}`}
-      style={{
-        width: boxSize,
-        height: boxSize,
-        transform: flip ? "scaleX(-1)" : undefined,
-      }}
+      className={`animate-cat-float pointer-events-none select-none ${sizeClasses} ${className}`}
+      style={{ transform: flip ? "scaleX(-1)" : undefined }}
     >
-      <svg
-        viewBox="0 0 48 48"
-        width={displaySize}
-        height={displaySize}
-        fill="none"
-        stroke={color}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="animate-cat-blink overflow-visible"
-      >
-        {/* Walking stick (drawn behind the cat) */}
-        {accessory === "stick" && (
-          <path
-            d="M4 44 L9 10"
-            stroke="hsl(var(--primary) / 0.7)"
-            strokeWidth="1.4"
-          />
-        )}
-        {/* Ears */}
-        <path d="M12 14 L15 6 L20 13" />
-        <path d="M36 14 L33 6 L28 13" />
-        {/* Head + body (curled sitting cat) */}
-        <path d="M10 22c0-6 5-10 14-10s14 4 14 10c0 8-6 14-14 14-3 0-5.5-.6-7.5-1.8" />
-        {/* Face details */}
-        <circle cx="19" cy="21" r="0.8" fill={color} />
-        <circle cx="29" cy="21" r="0.8" fill={color} />
-        <path d="M22 25c1 1 3 1 4 0" />
-        {/* Tail */}
-        <path
-          className="animate-tail-flick"
-          d="M28 34c5 1 9-2 9-7"
-        />
-        {/* Tiny hiking backpack strapped to the back */}
-        {accessory === "backpack" && (
-          <g>
-            <rect
-              x="29"
-              y="18"
-              width="8"
-              height="10"
-              rx="2"
-              fill="hsl(var(--primary) / 0.25)"
-              stroke="hsl(var(--primary) / 0.8)"
-              strokeWidth="1.2"
-            />
-            <path
-              d="M31 18v-2a2 2 0 0 1 4 0v2"
-              stroke="hsl(var(--primary) / 0.8)"
-              strokeWidth="1.2"
-            />
-          </g>
-        )}
-      </svg>
+      <img
+        src="/cat.webp"
+        alt=""
+        className="w-full h-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
+        draggable={false}
+      />
     </div>
   );
 }
@@ -296,14 +241,14 @@ function Hero() {
         </div>
       </motion.div>
 
-      {/* Little cat perched on the hillside */}
+      {/* Trekking cat perched on the hillside */}
       <MiniCat
-        className="absolute bottom-16 md:bottom-24 left-[12%] z-10"
-        size={32}
+        className="absolute bottom-16 md:bottom-24 left-[10%] z-10"
+        size="lg"
       />
       <MiniCat
-        className="absolute bottom-20 md:bottom-28 right-[15%] z-10"
-        size={22}
+        className="absolute bottom-20 md:bottom-28 right-[13%] z-10"
+        size="md"
         flip
       />
 
@@ -367,8 +312,8 @@ function MusicCorner({
         ))}
       </div>
 
-      <MiniCat className="absolute top-8 left-[8%] z-10" size={20} />
-      <MiniCat className="absolute bottom-10 right-[10%] z-10" size={26} flip />
+      <MiniCat className="absolute top-6 left-[6%] z-10" size="md" />
+      <MiniCat className="absolute bottom-6 right-[8%] z-10" size="lg" flip />
 
       <div className="max-w-md mx-auto relative z-10">
         <motion.div
@@ -553,9 +498,9 @@ function Timeline() {
           Tap the glowing stars to retrace our journey...
         </motion.p>
 
-        {/* Winding mountain ascent trail — replaces the old straight line */}
+        {/* Meandering mountain trail — organic switchback path, bottom to top */}
         <svg
-          className="absolute left-1/2 top-0 bottom-0 h-full w-24 -translate-x-1/2 pointer-events-none"
+          className="absolute left-1/2 top-0 bottom-0 h-full w-40 -translate-x-1/2 pointer-events-none"
           viewBox="0 0 100 1000"
           preserveAspectRatio="none"
           fill="none"
@@ -563,34 +508,33 @@ function Timeline() {
           <defs>
             <linearGradient id="trail-fade" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-              <stop offset="12%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
-              <stop offset="88%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+              <stop offset="10%" stopColor="hsl(var(--primary))" stopOpacity="0.45" />
+              <stop offset="90%" stopColor="hsl(var(--primary))" stopOpacity="0.45" />
               <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
             </linearGradient>
           </defs>
+          {/* Wide, organic switchbacks winding from the base camp up to the summit */}
           <path
-            d="M50,0 C25,90 75,180 50,270 C25,360 75,450 50,540 C25,630 75,720 50,810 C33,870 62,930 50,1000"
+            d="M50,1000 C10,920 15,860 50,810 C90,750 88,700 50,650 C10,600 12,540 50,500 C90,460 88,400 50,350 C15,300 12,240 50,190 C85,140 82,80 50,0"
             stroke="url(#trail-fade)"
-            strokeWidth="2.5"
+            strokeWidth="3"
             strokeLinecap="round"
-            strokeDasharray="3 14"
+            strokeDasharray="2 16"
           />
         </svg>
 
         <MiniCat
-          className="absolute -left-14 top-16 hidden md:block"
-          size={24}
-          accessory="backpack"
+          className="absolute -left-16 top-12 hidden md:block"
+          size="sm"
         />
         <MiniCat
-          className="absolute -right-14 bottom-24 hidden md:block"
-          size={20}
+          className="absolute -right-16 bottom-20 hidden md:block"
+          size="sm"
           flip
-          accessory="stick"
         />
 
         <div className="space-y-32">
-          {TIMELINE_NODES.map((node, i) => (
+          {[...TIMELINE_NODES].reverse().map((node, i) => (
             <motion.div
               key={node.id}
               initial={{ opacity: 0, y: 50 }}
@@ -763,9 +707,9 @@ function MountainPeak() {
       </button>
 
       {/* Cats resting on the peak */}
-      <MiniCat className="absolute bottom-40 left-[20%] z-10" size={26} />
-      <MiniCat className="absolute bottom-52 right-[22%] z-10" size={18} flip />
-      <MiniCat className="absolute top-1/3 left-[8%] z-10" size={16} />
+      <MiniCat className="absolute bottom-40 left-[18%] z-10" size="lg" />
+      <MiniCat className="absolute bottom-52 right-[20%] z-10" size="md" flip />
+      <MiniCat className="absolute top-1/3 left-[6%] z-10" size="sm" />
 
       {/* Mountain Silhouette — charcoal-blue peaks */}
       <div
@@ -825,7 +769,7 @@ function MountainPeak() {
               </h3>
 
               <p className="text-xs text-primary/70 tracking-widest uppercase font-mono mb-6">
-                Cosmic Peak &middot; Altitude: Infinity
+                Location: Cosmic Peak | Altitude: Infinity
               </p>
 
               <div className="border border-primary/20 rounded-xl px-6 py-5 mb-8 bg-background/40">

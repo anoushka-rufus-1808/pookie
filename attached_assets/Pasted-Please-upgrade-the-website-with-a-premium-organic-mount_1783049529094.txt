@@ -1,0 +1,24 @@
+Please upgrade the website with a premium, organic mountain-trekking theme. Use the uploaded image asset "cat.webp" to replace our old cat graphics, and completely overhaul the timeline layout. It is crucial to preserve all existing interactive states, countdown counters, modals, and audio play/pause logic. 
+
+Implement these changes across the codebase in a single clean sweep:
+
+1. THE NEW TREKKING CAT (Using cat.webp):
+   - Replace the entire CSS/SVG coded MiniCat component with a standard responsive image tag pointing to the uploaded "/cat.webp" asset.
+   - Make the cats significantly larger and highly noticeable across the page (set a base size around width: 70px to 90px / h-20 w-20, adjusting cleanly for mobile).
+   - Apply a very subtle, slow CSS keyframe idle-bobbing or floating animation to the image container so the trekking cat still feels alive.
+   - Distribute this new cat asset beautifully across the Hero, Music Corner, Timeline, and Mountain Peak sections.
+
+2. THE MEANDERING MOUNTAIN TRAIL (Timeline Redesign):
+   - Completely replace the rigid, straight vertical timeline line with a beautiful, continuous, smoothly curving SVG path (`<path>`) that snakes dynamically up the entire section. 
+   - It should look like an authentic trail map: flowing upward with organic, wide left-and-right winding curves/switchbacks, rather than sharp angles or geometric steps. Use a prominent dashed or dotted stroke style for the path.
+   - Anchor the 4 interactive star nodes precisely along this curving path at natural milestone intervals. Label the nodes from bottom to top as: "Base Camp", "Camp 1", "High Camp", and "The Summit". 
+
+3. THE CAMPFIRE SITE (Music Corner):
+   - Keep the "Cosmic Mixtape" card functional. Next to the main cat illustration, code a small, beautiful animated CSS campfire that glows and flickers gently with warm amber colors. 
+   - This frames the music section as a cozy, night-time mountain campsite soundtrack.
+
+4. THE SUMMIT REGISTER (Mountain Peak Easter Egg):
+   - When the hidden "Find Me" star is clicked and triggers the shooting star animation, style the revealed love note modal to look like an official, rustic "Summit Register / Climber's Logbook".
+   - Include a distinct header inside the modal: "Summit Successfully Reached! 🏔️" along with the subheader "Location: Cosmic Peak | Altitude: Infinity". Frame the love note text inside as the ultimate reward for completing the climb.
+
+Ensure the entire layout is perfectly responsive on both mobile and desktop, passes typecheck cleanly with no console errors, and builds correctly on the first try.
