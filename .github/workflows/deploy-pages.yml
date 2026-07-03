@@ -35,7 +35,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       
       - name: Build
-        run: pnpm run build
+        run: pnpm run build --filter ./artifacts/web-app
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
