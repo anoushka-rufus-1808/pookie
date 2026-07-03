@@ -2,12 +2,56 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, Star, X } from "lucide-react";
 
-// --- WELCOME OVERLAY ---
-function WelcomeOverlay({
-  onStart,
+// --- MINI CAT DECORATION ---
+// A small, cute lo-fi cat silhouette used as a recurring decorative motif.
+function MiniCat({
+  className = "",
+  size = 28,
+  color = "hsl(var(--secondary))",
+  flip = false,
 }: {
-  onStart: () => void;
+  className?: string;
+  size?: number;
+  color?: string;
+  flip?: boolean;
 }) {
+  return (
+    <div
+      className={`animate-cat-float pointer-events-none select-none ${className}`}
+      style={{ width: size, height: size, transform: flip ? "scaleX(-1)" : undefined }}
+    >
+      <svg
+        viewBox="0 0 48 48"
+        width={size}
+        height={size}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="animate-cat-blink"
+      >
+        {/* Ears */}
+        <path d="M12 14 L15 6 L20 13" />
+        <path d="M36 14 L33 6 L28 13" />
+        {/* Head + body (curled sitting cat) */}
+        <path d="M10 22c0-6 5-10 14-10s14 4 14 10c0 8-6 14-14 14-3 0-5.5-.6-7.5-1.8" />
+        {/* Face details */}
+        <circle cx="19" cy="21" r="0.8" fill={color} />
+        <circle cx="29" cy="21" r="0.8" fill={color} />
+        <path d="M22 25c1 1 3 1 4 0" />
+        {/* Tail */}
+        <path
+          className="animate-tail-flick"
+          d="M28 34c5 1 9-2 9-7"
+        />
+      </svg>
+    </div>
+  );
+}
+
+// --- WELCOME OVERLAY ---
+function WelcomeOverlay({ onStart }: { onStart: () => void }) {
   const [visible, setVisible] = useState(true);
 
   const handleStart = () => {
@@ -210,6 +254,17 @@ function Hero() {
         </div>
       </motion.div>
 
+      {/* Little cat perched on the hillside */}
+      <MiniCat
+        className="absolute bottom-16 md:bottom-24 left-[12%] z-10"
+        size={32}
+      />
+      <MiniCat
+        className="absolute bottom-20 md:bottom-28 right-[15%] z-10"
+        size={22}
+        flip
+      />
+
       {/* Mountains */}
       <div className="absolute bottom-0 w-full h-48 md:h-64 pointer-events-none text-card">
         <svg
@@ -251,6 +306,28 @@ function MusicCorner({
 
   return (
     <div className="w-full py-24 px-4 bg-card border-t border-border/50 relative overflow-hidden">
+      {/* Ambient stars for this section */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 40 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-twinkle"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 1.6 + 0.5}px`,
+              height: `${Math.random() * 1.6 + 0.5}px`,
+              animationDelay: `${Math.random() * 4}s`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+              opacity: Math.random() * 0.4 + 0.05,
+            }}
+          />
+        ))}
+      </div>
+
+      <MiniCat className="absolute top-8 left-[8%] z-10" size={20} />
+      <MiniCat className="absolute bottom-10 right-[10%] z-10" size={26} flip />
+
       <div className="max-w-md mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -333,18 +410,18 @@ function MusicCorner({
 const TIMELINE_NODES = [
   {
     id: 1,
-    title: "The Stars Aligned for Him",
-    date: "May 23, 2005",
+    title: "I arrived, heheheh before you",
+    date: "August 18, 2004",
     content:
-      "The universe took its time crafting someone extraordinary. Every star had to be in exactly the right place.",
+      "Born a bit earlier, entirely clueless that a workshop would eventually wreck my single status.",
     icon: <Star className="w-6 h-6" />,
   },
   {
     id: 2,
-    title: "The Stars Aligned for Her",
-    date: "August 18, 2004",
+    title: "My Pookie entered the world yayyyyy",
+    date: "May 23, 2005",
     content:
-      "She arrived in the world quietly, carrying a universe of warmth inside her.",
+      "The universe took its time crafting someone extraordinary. Every star had to be in exactly the right place.",
     icon: <Star className="w-6 h-6" />,
   },
   {
@@ -352,12 +429,12 @@ const TIMELINE_NODES = [
     title: "When Cosmic Paths Crossed",
     date: "June 23, 2026",
     content:
-      "Though heavy monsoon clouds covered the skies of Chhattisgarh, our worlds completely lit up.",
+      "The day we actually met. The weather outside was terrible but definitely worth it.",
     icon: <Star className="w-6 h-6" />,
   },
   {
     id: 4,
-    title: "Written in the Stars",
+    title: "Started Dating",
     date: "June 30, 2026",
     content:
       "A Micro Full Moon rose that night — rare, close, impossibly bright. Just like this.",
@@ -404,6 +481,9 @@ function Timeline() {
 
         {/* Vertical line */}
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 -translate-x-1/2" />
+
+        <MiniCat className="absolute -left-10 top-16 hidden md:block" size={24} />
+        <MiniCat className="absolute -right-10 bottom-24 hidden md:block" size={20} flip />
 
         <div className="space-y-32">
           {TIMELINE_NODES.map((node, i) => (
@@ -575,8 +655,16 @@ function MountainPeak() {
         </div>
       </button>
 
+      {/* Cats resting on the peak */}
+      <MiniCat className="absolute bottom-40 left-[20%] z-10" size={26} />
+      <MiniCat className="absolute bottom-52 right-[22%] z-10" size={18} flip />
+      <MiniCat className="absolute top-1/3 left-[8%] z-10" size={16} />
+
       {/* Mountain Silhouette — charcoal-blue peaks */}
-      <div className="absolute bottom-0 w-full pointer-events-none" style={{ height: "40%" }}>
+      <div
+        className="absolute bottom-0 w-full pointer-events-none"
+        style={{ height: "40%" }}
+      >
         <svg
           viewBox="0 0 1440 400"
           className="w-full h-full"
@@ -620,10 +708,8 @@ function MountainPeak() {
 
               <p className="text-white/90 leading-relaxed mb-8">
                 "If the cosmos had a purpose, I think it was this — putting you
-                and me in the same room, on the same rainy afternoon, under
-                those Chhattisgarh skies. I've been yours since the moment the
-                clouds parted. Forever feels like not enough time with you.
-                Happy Anniversary, my love."
+                and me in the same room, under the same skies. Forever feels
+                like not enough time with you, my adorable pookie."
               </p>
 
               <button

@@ -170,6 +170,35 @@
   animation: node-glow 3.5s ease-in-out infinite;
 }
 
+@keyframes cat-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(-2deg); }
+}
+
+.animate-cat-float {
+  animation: cat-float 4s ease-in-out infinite;
+}
+
+@keyframes tail-flick {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-6deg); }
+}
+
+.animate-tail-flick {
+  animation: tail-flick 2.4s ease-in-out infinite;
+  transform-origin: 90% 90%;
+}
+
+@keyframes cat-blink {
+  0%, 92%, 100% { opacity: 1; }
+  96% { opacity: 0.15; }
+}
+
+.animate-cat-blink {
+  animation: cat-blink 4.5s ease-in-out infinite;
+}
+
 @keyframes shooting-star {
   0% { transform: translateX(0) translateY(0) rotate(45deg) scaleX(0); opacity: 0; }
   10% { transform: translateX(10vw) translateY(10vh) rotate(45deg) scaleX(1); opacity: 1; }
