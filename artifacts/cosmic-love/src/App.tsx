@@ -4,33 +4,55 @@ import { Play, Pause, Star, X } from "lucide-react";
 
 // --- MINI CAT DECORATION ---
 // A small, cute lo-fi cat silhouette used as a recurring decorative motif.
+// Internally scaled up ~1.7x so instances read clearly across the page while
+// keeping each call site's relative size variations intact.
+const MINI_CAT_SCALE = 1.7;
+
 function MiniCat({
   className = "",
   size = 28,
   color = "hsl(var(--secondary))",
   flip = false,
+  accessory,
 }: {
   className?: string;
   size?: number;
   color?: string;
   flip?: boolean;
+  accessory?: "backpack" | "stick";
 }) {
+  const displaySize = size * MINI_CAT_SCALE;
+  // Extra padding so the tail-flick / bob / accessory don't get visually clipped
+  const boxSize = displaySize * 1.35;
+
   return (
     <div
-      className={`animate-cat-float pointer-events-none select-none ${className}`}
-      style={{ width: size, height: size, transform: flip ? "scaleX(-1)" : undefined }}
+      className={`animate-cat-float pointer-events-none select-none flex items-center justify-center overflow-visible ${className}`}
+      style={{
+        width: boxSize,
+        height: boxSize,
+        transform: flip ? "scaleX(-1)" : undefined,
+      }}
     >
       <svg
         viewBox="0 0 48 48"
-        width={size}
-        height={size}
+        width={displaySize}
+        height={displaySize}
         fill="none"
         stroke={color}
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="animate-cat-blink"
+        className="animate-cat-blink overflow-visible"
       >
+        {/* Walking stick (drawn behind the cat) */}
+        {accessory === "stick" && (
+          <path
+            d="M4 44 L9 10"
+            stroke="hsl(var(--primary) / 0.7)"
+            strokeWidth="1.4"
+          />
+        )}
         {/* Ears */}
         <path d="M12 14 L15 6 L20 13" />
         <path d="M36 14 L33 6 L28 13" />
@@ -45,6 +67,26 @@ function MiniCat({
           className="animate-tail-flick"
           d="M28 34c5 1 9-2 9-7"
         />
+        {/* Tiny hiking backpack strapped to the back */}
+        {accessory === "backpack" && (
+          <g>
+            <rect
+              x="29"
+              y="18"
+              width="8"
+              height="10"
+              rx="2"
+              fill="hsl(var(--primary) / 0.25)"
+              stroke="hsl(var(--primary) / 0.8)"
+              strokeWidth="1.2"
+            />
+            <path
+              d="M31 18v-2a2 2 0 0 1 4 0v2"
+              stroke="hsl(var(--primary) / 0.8)"
+              strokeWidth="1.2"
+            />
+          </g>
+        )}
       </svg>
     </div>
   );
@@ -340,36 +382,64 @@ function MusicCorner({
           </h2>
 
           <div className="flex items-center justify-between mb-8">
-            {/* Cat with headphones */}
-            <div className={`relative ${isPlaying ? "animate-bob" : ""}`}>
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="hsl(var(--secondary))"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1-19.995.324A10 10 0 0 1 12 2Z" />
-                <path d="M8 14v-2M16 14v-2M12 16v-2" />
-                <path d="M3 12a9 9 0 0 1 18 0" />
-              </svg>
-              {/* Headphones */}
-              <svg
-                className="absolute -top-1 -left-1 text-primary"
-                width="72"
-                height="72"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
-              </svg>
+            {/* Cat with headphones, camped by the fire */}
+            <div className="relative flex items-end gap-2">
+              <div className={`relative ${isPlaying ? "animate-bob" : ""}`}>
+                <svg
+                  width="64"
+                  height="64"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="hsl(var(--secondary))"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1-19.995.324A10 10 0 0 1 12 2Z" />
+                  <path d="M8 14v-2M16 14v-2M12 16v-2" />
+                  <path d="M3 12a9 9 0 0 1 18 0" />
+                </svg>
+                {/* Headphones */}
+                <svg
+                  className="absolute -top-1 -left-1 text-primary"
+                  width="72"
+                  height="72"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
+                </svg>
+              </div>
+
+              {/* Cozy little campfire */}
+              <div className="relative w-8 h-8 flex items-end justify-center">
+                <div
+                  className="absolute bottom-0 w-6 h-6 rounded-full bg-primary/40 blur-md animate-campfire-glow"
+                  aria-hidden
+                />
+                <svg
+                  width="20"
+                  height="24"
+                  viewBox="0 0 20 24"
+                  className="relative animate-flame"
+                >
+                  <path
+                    d="M10 22c-3.5 0-6-2.2-6-5.4 0-3 2.2-4.8 2.9-8 .3 1.6 1.4 2.6 1.4 2.6s-.6-3.4 1.9-6.2c-.3 2.6.9 3.9 2.1 5.4 1.3 1.6 2.7 3.4 2.7 6.2 0 3.2-2.5 5.4-5 5.4Z"
+                    fill="hsl(var(--primary))"
+                    opacity="0.95"
+                  />
+                  <path
+                    d="M10 20.5c-1.8 0-3.2-1.1-3.2-2.9 0-1.5 1.1-2.4 1.5-4 .3.9.9 1.4.9 1.4s-.2-1.9 1-3.4c0 1.4.6 2.1 1.2 2.9.7.9 1.6 1.9 1.6 3.3 0 1.6-1.4 2.7-3 2.7Z"
+                    fill="#FFE08A"
+                  />
+                </svg>
+                {/* Log pile */}
+                <div className="absolute -bottom-1 w-8 h-1.5 rounded-full bg-[#3b2a1a]" />
+              </div>
             </div>
 
             <button
@@ -410,6 +480,7 @@ function MusicCorner({
 const TIMELINE_NODES = [
   {
     id: 1,
+    milestone: "Base Camp",
     title: "I arrived, heheheh before you",
     date: "August 18, 2004",
     content:
@@ -418,6 +489,7 @@ const TIMELINE_NODES = [
   },
   {
     id: 2,
+    milestone: "Camp 1",
     title: "My Pookie entered the world yayyyyy",
     date: "May 23, 2005",
     content:
@@ -426,6 +498,7 @@ const TIMELINE_NODES = [
   },
   {
     id: 3,
+    milestone: "High Camp",
     title: "When Cosmic Paths Crossed",
     date: "June 23, 2026",
     content:
@@ -434,6 +507,7 @@ const TIMELINE_NODES = [
   },
   {
     id: 4,
+    milestone: "The Summit",
     title: "Started Dating",
     date: "June 30, 2026",
     content:
@@ -479,11 +553,41 @@ function Timeline() {
           Tap the glowing stars to retrace our journey...
         </motion.p>
 
-        {/* Vertical line */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/0 via-primary/30 to-primary/0 -translate-x-1/2" />
+        {/* Winding mountain ascent trail — replaces the old straight line */}
+        <svg
+          className="absolute left-1/2 top-0 bottom-0 h-full w-24 -translate-x-1/2 pointer-events-none"
+          viewBox="0 0 100 1000"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="trail-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              <stop offset="12%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+              <stop offset="88%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M50,0 C25,90 75,180 50,270 C25,360 75,450 50,540 C25,630 75,720 50,810 C33,870 62,930 50,1000"
+            stroke="url(#trail-fade)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="3 14"
+          />
+        </svg>
 
-        <MiniCat className="absolute -left-10 top-16 hidden md:block" size={24} />
-        <MiniCat className="absolute -right-10 bottom-24 hidden md:block" size={20} flip />
+        <MiniCat
+          className="absolute -left-14 top-16 hidden md:block"
+          size={24}
+          accessory="backpack"
+        />
+        <MiniCat
+          className="absolute -right-14 bottom-24 hidden md:block"
+          size={20}
+          flip
+          accessory="stick"
+        />
 
         <div className="space-y-32">
           {TIMELINE_NODES.map((node, i) => (
@@ -507,6 +611,9 @@ function Timeline() {
 
               {/* Node button with tooltip */}
               <div className="absolute left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+                <span className="text-[10px] tracking-[0.2em] uppercase text-primary/60 font-mono mb-1">
+                  {node.milestone}
+                </span>
                 <button
                   data-testid={`button-timeline-node-${node.id}`}
                   onClick={() => setActiveNode(node.id)}
@@ -697,19 +804,40 @@ function MountainPeak() {
             exit={{ opacity: 0, y: 20 }}
             className="absolute bottom-32 z-20 w-full max-w-lg px-4"
           >
-            <div className="bg-card/90 backdrop-blur-md border border-primary/30 rounded-2xl p-8 shadow-2xl text-center">
-              <div className="flex justify-center items-center gap-2 mb-4">
-                <Star className="w-4 h-4 text-primary fill-primary" />
-                <h3 className="text-2xl font-script text-primary">
-                  You found it
-                </h3>
-                <Star className="w-4 h-4 text-primary fill-primary" />
+            <div
+              className="relative bg-card/90 backdrop-blur-md border-2 border-dashed border-primary/40 rounded-2xl p-8 shadow-2xl text-center"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(0deg, transparent, transparent 27px, hsl(var(--primary) / 0.05) 28px)",
+              }}
+            >
+              {/* Wax-seal style stamp badge */}
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary/90 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.5)] rotate-[-8deg]">
+                <Star className="w-4 h-4 text-background fill-background" />
               </div>
 
-              <p className="text-white/90 leading-relaxed mb-8">
-                "If the cosmos had a purpose, I think it was this — putting you
-                and me in the same room, under the same skies. Forever feels
-                like not enough time with you, my adorable pookie."
+              <p className="text-[10px] tracking-[0.3em] uppercase text-secondary/60 font-mono mb-1">
+                Summit Register &middot; Climber&apos;s Logbook
+              </p>
+
+              <h3 className="text-2xl font-script text-primary mb-1">
+                Summit Successfully Reached! 🏔️
+              </h3>
+
+              <p className="text-xs text-primary/70 tracking-widest uppercase font-mono mb-6">
+                Cosmic Peak &middot; Altitude: Infinity
+              </p>
+
+              <div className="border border-primary/20 rounded-xl px-6 py-5 mb-8 bg-background/40">
+                <p className="text-white/90 leading-relaxed italic">
+                  "If the cosmos had a purpose, I think it was this — putting you
+                  and me in the same room, under the same skies. Forever feels
+                  like not enough time with you, my adorable pookie."
+                </p>
+              </div>
+
+              <p className="text-[10px] tracking-[0.2em] uppercase text-secondary/40 font-mono mb-6">
+                Entry logged for all time, under a Micro Full Moon
               </p>
 
               <button

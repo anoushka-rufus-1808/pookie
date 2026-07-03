@@ -1,0 +1,24 @@
+Enhance the "Cosmic Love Letter" website by seamlessly integrating a premium, cozy mountain-trek theme that aligns with the existing starry lo-fi aesthetic, while also fixing the sizing of our decorative cats. Maintain all current functionalities, states, and audio controls.
+
+Please implement the following updates:
+
+0. GLOBAL MINICAT COMPONENT RESIZING (Priority Fix):
+   - Modify the base `MiniCat` component itself to make all the scattered cats about 1.5x to 2x larger so they are much more noticeable and visible across the page.
+   - Ensure their containers scale up cleanly so their tail-flick, bobbing, and blinking animations don't get clipped. Keep the subtle size variations/orientations between the scattered instances intact, just scaled up.
+
+1. THE CELESTIAL TIMELINE (The Mountain Ascent):
+   - Transform the straight vertical timeline line into a winding, dashed/dotted SVG mountain trail path that flows upward.
+   - Rebrand the 4 interactive star nodes as trek milestones: "Base Camp", "Camp 1", "High Camp", and "The Summit". Keep the hover tooltips and modal functionality exactly as they are.
+   - For the two decorative MiniCats in this section, modify their styles to give one a tiny, cute vector hiking backpack or walking stick to fit the ascent.
+
+2. THE MUSIC CORNER (Campfire Lo-Fi):
+   - Keep the "Cosmic Mixtape" card and the headphone-wearing, head-bobbing cat exactly as they are.
+   - Right next to or just below the cat, add a beautiful, small animated vector/CSS campfire that glows and flickers gently.
+   - This turns the music section into a cozy night-time mountain campsite vibe.
+
+3. THE MOUNTAIN PEAK (The Summit Register):
+   - When the hidden "Find Me" star is clicked and triggers the shooting star animation, style the revealed hidden note modal to look like an official, rustic "Summit Register / Climber's Logbook".
+   - Add a header inside the modal saying: "Summit Successfully Reached! 🏔️" along with the coordinates "Cosmic Peak - Altitude: Infinity".
+   - Frame the love note text beautifully as the ultimate reward found at the peak of the mountain.
+
+Verify that the layout remains completely responsive and typechecks cleanly without any console errors.
