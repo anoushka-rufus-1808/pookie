@@ -32,7 +32,7 @@ function MiniCat({
         <img
           src="/cat2.png"
           alt=""
-          className="w-full h-full object-contain animate-cat-blink drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)]"
+          className="w-full h-full object-contain animate-cat-blink drop-shadow-[0_6px_14px_rgba(0,0,0,0.45)] mix-blend-lighten"
           draggable={false}
         />
       </div>
